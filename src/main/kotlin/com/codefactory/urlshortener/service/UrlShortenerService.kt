@@ -4,6 +4,7 @@ import com.codefactory.urlshortener.api.request.CreateUrlRequest
 import com.codefactory.urlshortener.domain.ShortenedUrl
 import com.codefactory.urlshortener.entity.UrlMapping
 import com.codefactory.urlshortener.entity.toDomain
+import com.codefactory.urlshortener.exception.UrlNotFoundException
 import com.codefactory.urlshortener.repository.UrlMappingRepository
 import com.codefactory.urlshortener.util.ShortIdGenerator
 import java.net.IDN
@@ -64,6 +65,7 @@ class UrlShortenerService(
     fun resolveShortUrl(shortId: String): Mono<ShortenedUrl> {
         return repository.findByShortId(shortId)
             .map { it.toDomain() }
+            .switchIfEmpty(Mono.error(UrlNotFoundException(shortId)))
     }
 
     private fun normalizeUrl(url: String): String {
