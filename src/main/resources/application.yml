@@ -1,6 +1,27 @@
+server:
+  port: "${SERVER_PORT:8080}"
+
 spring:
   application:
     name: urlshortener
+
+  datasource:
+    url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:urlshortener}"
+    username: "${DB_USER:postgres}"
+    password: "${DB_PASS:password}"
+
+  flyway:
+    url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:urlshortener}"
+    user: "${DB_USER:postgres}"
+    password: "${DB_PASS:password}"
+    locations: classpath:db/migration
+    enabled: true
+
+  r2dbc:
+    url: "r2dbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:urlshortener}"
+    username: "${DB_USER:postgres}"
+    password: "${DB_PASS:password}"
+
 
 
 
