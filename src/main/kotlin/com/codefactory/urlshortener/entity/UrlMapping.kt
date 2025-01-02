@@ -11,6 +11,7 @@ data class UrlMapping(
     val id: Long? = null,
     val shortId: String,
     val originalUrl: String,
+    val normalizedUrl: String,
     val urlHash: ByteArray,
     val createdAt: Instant = Instant.now(),
 )

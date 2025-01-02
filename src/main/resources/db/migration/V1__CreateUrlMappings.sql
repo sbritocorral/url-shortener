@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS url_mappings (
     id BIGSERIAL PRIMARY KEY,
     short_id VARCHAR(255) NOT NULL,
     original_url TEXT NOT NULL,
+    normalized_url TEXT NOT NULL,
     url_hash BYTEA NOT NULL,
     created_at TIMESTAMPTZ NOT NULL
 );
