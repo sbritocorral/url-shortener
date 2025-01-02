@@ -1,5 +1,6 @@
 package com.codefactory.urlshortener.util
 
+import com.codefactory.urlshortener.constants.UrlConstants
 import java.security.MessageDigest
 import kotlin.collections.fold
 import kotlin.collections.take
@@ -9,11 +10,10 @@ import kotlin.text.substring
 import kotlin.text.toByteArray
 
 object ShortIdGenerator {
-    private const val BASE62_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 
     fun generateShortId(
         input: String,
-        length: Int = 8,
+        length: Int = UrlConstants.SHORT_ID_LENGTH,
     ): String {
         val sha256 =
             MessageDigest.getInstance("SHA-256")
@@ -26,7 +26,7 @@ object ShortIdGenerator {
         // Ensure consistent length
         return when {
             base62.length > length -> base62.substring(0, length)
-            base62.length < length -> base62.padStart(length, BASE62_ALPHABET[0])
+            base62.length < length -> base62.padStart(length, UrlConstants.BASE62_ALPHABET[0])
             else -> base62
         }
     }
@@ -37,12 +37,12 @@ object ShortIdGenerator {
 
         // Handle the case when number is 0
         if (number == 0L) {
-            return BASE62_ALPHABET[0].toString()
+            return UrlConstants.BASE62_ALPHABET[0].toString()
         }
 
         while (number > 0) {
             val remainder = (number % 62).toInt()
-            sb.append(BASE62_ALPHABET[remainder])
+            sb.append(UrlConstants.BASE62_ALPHABET[remainder])
             number /= 62
         }
 
