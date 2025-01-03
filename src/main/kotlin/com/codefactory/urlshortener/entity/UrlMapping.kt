@@ -20,5 +20,6 @@ fun UrlMapping.toDomain() =
     ShortenedUrl(
         shortId = shortId,
         originalUrl = originalUrl,
+        normalizedUrl = normalizedUrl,
         createdAt = createdAt,
     )
