@@ -24,41 +24,40 @@ class UrlShortenerService(
     private val logger = LoggerFactory.getLogger(UrlShortenerService::class.java)
 
     fun createShortUrl(request: CreateUrlRequest): Mono<ShortenedUrl> {
-        logger.debug("Creating short URL for: {}", request.originalUrl)
-        val normalizedUrl = normalizeUrl(request.originalUrl)
+        return Mono.defer {
+            logger.debug("Creating short URL for: {}", request.originalUrl)
+            val normalizedUrl = normalizeUrl(request.originalUrl)
 
-        val urlHash =
-            MessageDigest.getInstance("SHA-256")
-                .digest(normalizedUrl.toByteArray())
+            val urlHash = MessageDigest.getInstance("SHA-256").digest(normalizedUrl.toByteArray())
 
-        return repository.findByUrlHash(urlHash)
-            .flatMap { existing ->
-                logger.debug("Found existing shortId: {}", existing.shortId)
-                Mono.just(existing.toDomain())
-            }.switchIfEmpty(
-                Mono.defer {
-                    val shortId = ShortIdGenerator.generateShortId(normalizedUrl)
-                    val entity =
-                        UrlMapping(
-                            shortId = shortId,
-                            originalUrl = request.originalUrl,
-                            normalizedUrl = normalizedUrl,
-                            urlHash = urlHash,
-                            createdAt = Instant.now(),
-                        )
-                    repository.save(entity)
-                        .doOnSuccess { logger.debug("Created short URL: ${it.shortId}") }
-                        .map { it.toDomain() }
-                        .onErrorResume(DuplicateKeyException::class.java) { _ ->
-                            logger.warn("Collision detected. Retrying with a random salt.")
-                            val saltedShortId = ShortIdGenerator.generateShortId(request.originalUrl + System.nanoTime())
-                            val secondEntity = entity.copy(shortId = saltedShortId)
-                            repository.save(secondEntity)
-                                .map { it.toDomain() }
-                        }
-                },
-            )
-
+            repository.findByUrlHash(urlHash)
+                .flatMap { existing ->
+                    logger.debug("Found existing shortId: {}", existing.shortId)
+                    Mono.just(existing.toDomain())
+                }.switchIfEmpty(
+                    Mono.defer {
+                        val shortId = ShortIdGenerator.generateShortId(normalizedUrl)
+                        val entity =
+                            UrlMapping(
+                                shortId = shortId,
+                                originalUrl = request.originalUrl,
+                                normalizedUrl = normalizedUrl,
+                                urlHash = urlHash,
+                                createdAt = Instant.now(),
+                            )
+                        repository.save(entity)
+                            .doOnSuccess { logger.debug("Created short URL: ${it.shortId}") }
+                            .map { it.toDomain() }
+                            .onErrorResume(DuplicateKeyException::class.java) { _ ->
+                                logger.warn("Collision detected. Retrying with a random salt.")
+                                val saltedShortId = ShortIdGenerator.generateShortId(request.originalUrl + System.nanoTime())
+                                val secondEntity = entity.copy(shortId = saltedShortId)
+                                repository.save(secondEntity)
+                                    .map { it.toDomain() }
+                            }
+                    },
+                )
+        }
 
     }
 
@@ -72,7 +71,7 @@ class UrlShortenerService(
         return try {
             val uri = URI(url.trim())
             val normalizedUri = URI(
-                uri.scheme?.lowercase() ?: "https",
+                "https",
                 uri.userInfo,
                 uri.host?.lowercase(),
                 uri.port,
