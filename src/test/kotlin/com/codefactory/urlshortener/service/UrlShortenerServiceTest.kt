@@ -10,9 +10,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.slot
-import java.time.Instant
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -20,9 +17,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.dao.DuplicateKeyException
-import org.springframework.web.util.InvalidUrlException
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
+import java.time.Instant
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class UrlShortenerServiceTest {
     private lateinit var repository: UrlMappingRepository
@@ -47,8 +46,8 @@ class UrlShortenerServiceTest {
                 "http://example.com:8080",
                 "http://subdomain.example.com",
                 "http://example.com/path?param=value",
-                "http://example.com#fragment"
-            ]
+                "http://example.com#fragment",
+            ],
         )
         fun `should handle URLs with different components`(url: String) {
             // Arrange
@@ -80,20 +79,22 @@ class UrlShortenerServiceTest {
         fun `should handle multiple collision retries`() {
             // Arrange
             val request = CreateUrlRequest("https://example.com")
-            val finalMapping = UrlMapping(
-                id = 1L,
-                shortId = "finalId",
-                originalUrl = "https://example.com",
-                normalizedUrl = "https://example.com",
-                urlHash = ByteArray(32),
-                createdAt = Instant.now()
-            )
+            val finalMapping =
+                UrlMapping(
+                    id = 1L,
+                    shortId = "finalId",
+                    originalUrl = "https://example.com",
+                    normalizedUrl = "https://example.com",
+                    urlHash = ByteArray(32),
+                    createdAt = Instant.now(),
+                )
 
             coEvery { repository.findByUrlHash(any()) } returns Mono.empty()
-            coEvery { repository.save(any()) } returnsMany listOf(
-                Mono.error(DuplicateKeyException("Duplicate key")),
-                Mono.just(finalMapping)
-            )
+            coEvery { repository.save(any()) } returnsMany
+                listOf(
+                    Mono.error(DuplicateKeyException("Duplicate key")),
+                    Mono.just(finalMapping),
+                )
 
             // Act & Assert
             StepVerifier.create(service.createShortUrl(request))
@@ -111,14 +112,15 @@ class UrlShortenerServiceTest {
         fun `should return URL for valid short ID`() {
             // Arrange
             val shortId = "abc123"
-            val mapping = UrlMapping(
-                id = 1L,
-                shortId = shortId,
-                originalUrl = "https://example.com",
-                normalizedUrl = "https://example.com",
-                urlHash = ByteArray(32),
-                createdAt = Instant.now()
-            )
+            val mapping =
+                UrlMapping(
+                    id = 1L,
+                    shortId = shortId,
+                    originalUrl = "https://example.com",
+                    normalizedUrl = "https://example.com",
+                    urlHash = ByteArray(32),
+                    createdAt = Instant.now(),
+                )
 
             coEvery { repository.findByShortId(shortId) } returns Mono.just(mapping)
 
@@ -149,4 +151,3 @@ class UrlShortenerServiceTest {
         }
     }
 }
-

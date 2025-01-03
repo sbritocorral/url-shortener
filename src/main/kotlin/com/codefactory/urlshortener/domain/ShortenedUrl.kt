@@ -6,7 +6,7 @@ import java.time.Instant
 data class ShortenedUrl(
     val shortId: String,
     val originalUrl: String,
-    val normalizedUrl : String,
+    val normalizedUrl: String,
     val createdAt: Instant,
 )
 

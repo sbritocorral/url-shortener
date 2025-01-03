@@ -33,7 +33,7 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test"){
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "mockito-core")
     }
     testImplementation("org.springframework.boot:spring-boot-testcontainers")

@@ -10,7 +10,6 @@ import kotlin.text.substring
 import kotlin.text.toByteArray
 
 object ShortIdGenerator {
-
     fun generateShortId(
         input: String,
         length: Int = UrlConstants.SHORT_ID_LENGTH,

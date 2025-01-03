@@ -50,7 +50,9 @@ class GlobalExceptionHandler {
                 ErrorResponse(
                     status = HttpStatus.BAD_REQUEST.value(),
                     error = "Invalid Request",
-                    message = "Invalid short ID format: must be exactly ${UrlConstants.SHORT_ID_LENGTH} characters long and contain only letters and numbers",
+                    message =
+                        "Invalid short ID format: must be exactly ${UrlConstants.SHORT_ID_LENGTH} characters long " +
+                            "and contain only letters and numbers",
                     path = request.path.pathWithinApplication().value(),
                 ),
             )

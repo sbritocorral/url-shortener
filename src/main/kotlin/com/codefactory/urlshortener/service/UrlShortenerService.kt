@@ -7,19 +7,17 @@ import com.codefactory.urlshortener.entity.toDomain
 import com.codefactory.urlshortener.exception.UrlNotFoundException
 import com.codefactory.urlshortener.repository.UrlMappingRepository
 import com.codefactory.urlshortener.util.ShortIdGenerator
-import java.net.IDN
-import java.net.URI
-import java.security.MessageDigest
-import java.time.Instant
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Service
-import org.springframework.web.util.InvalidUrlException
 import reactor.core.publisher.Mono
+import java.net.URI
+import java.security.MessageDigest
+import java.time.Instant
 
 @Service
 class UrlShortenerService(
-    private val repository: UrlMappingRepository
+    private val repository: UrlMappingRepository,
 ) {
     private val logger = LoggerFactory.getLogger(UrlShortenerService::class.java)
 
@@ -58,7 +56,6 @@ class UrlShortenerService(
                     },
                 )
         }
-
     }
 
     fun resolveShortUrl(shortId: String): Mono<ShortenedUrl> {
@@ -76,7 +73,7 @@ class UrlShortenerService(
             uri.port,
             uri.path,
             uri.query,
-            uri.fragment
+            uri.fragment,
         ).toString().trimEnd('/')
     }
 }

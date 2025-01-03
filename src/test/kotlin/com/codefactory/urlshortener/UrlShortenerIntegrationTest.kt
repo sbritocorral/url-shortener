@@ -5,9 +5,6 @@ import com.codefactory.urlshortener.api.response.ErrorResponse
 import com.codefactory.urlshortener.api.response.UrlResponse
 import com.codefactory.urlshortener.repository.UrlMappingRepository
 import io.mockk.clearAllMocks
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -24,6 +21,9 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.test.StepVerifier
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestcontainersConfiguration::class)
@@ -142,7 +142,6 @@ class UrlShortenerIntegrationTest {
 
     @Nested
     inner class UrlValidation {
-
         @ParameterizedTest(name = "should accept valid URL: {0}")
         @ValueSource(
             strings = [
@@ -161,8 +160,8 @@ class UrlShortenerIntegrationTest {
                 "http://localhost",
                 "http://localhost:8080",
                 "https://123.123.123.123",
-                "https://example.com/path?param1=value1&param2=value2"
-            ]
+                "https://example.com/path?param1=value1&param2=value2",
+            ],
         )
         fun `should accept valid URLs`(validUrl: String) {
             val request = CreateUrlRequest(validUrl)
@@ -212,8 +211,8 @@ class UrlShortenerIntegrationTest {
                 "http://example.com/path with spaces",
                 "http://example.com\\invalid-backslash",
                 "http://example.com:invalid-port",
-                "http://[invalid-ipv6].com"
-            ]
+                "http://[invalid-ipv6].com",
+            ],
         )
         fun `should reject invalid URLs`(invalidUrl: String) {
             val request = CreateUrlRequest(invalidUrl)
@@ -342,11 +341,10 @@ class UrlShortenerIntegrationTest {
 
     @Nested
     inner class ErrorHandling {
-
         @Test
         fun `should handle bad request for malformed JSON`() {
             // Arrange
-            val malformedJson = """{"originalUrl": }"""  // Invalid JSON
+            val malformedJson = """{"originalUrl": }""" // Invalid JSON
 
             // Act & Assert
             webTestClient.post()
@@ -361,7 +359,6 @@ class UrlShortenerIntegrationTest {
                     assertTrue(error.message.contains("Invalid short ID format: must be exactly"))
                 }
         }
-
 
         @Test
         fun `should return 404 for non-existent shortId`() {
@@ -387,20 +384,21 @@ class UrlShortenerIntegrationTest {
             val numberOfOperations = 5
 
             // Act - Create multiple URLs
-            val createdUrls = (1..numberOfOperations).map { i ->
-                val url = "$baseUrl$i"
-                val request = CreateUrlRequest(url)
+            val createdUrls =
+                (1..numberOfOperations).map { i ->
+                    val url = "$baseUrl$i"
+                    val request = CreateUrlRequest(url)
 
-                webTestClient.post()
-                    .uri("/api/v1/urls")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(request)
-                    .exchange()
-                    .expectStatus().isOk
-                    .expectBody<UrlResponse>()
-                    .returnResult()
-                    .responseBody!!
-            }
+                    webTestClient.post()
+                        .uri("/api/v1/urls")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(request)
+                        .exchange()
+                        .expectStatus().isOk
+                        .expectBody<UrlResponse>()
+                        .returnResult()
+                        .responseBody!!
+                }
 
             // Verify each URL can be resolved
             createdUrls.forEach { created ->
@@ -434,26 +432,28 @@ class UrlShortenerIntegrationTest {
             // Arrange
             val numberOfRequests = 10
             val baseUrl = "https://example.com/page"
-            val requests = (1..numberOfRequests).map { i ->
-                CreateUrlRequest("$baseUrl$i")
-            }
+            val requests =
+                (1..numberOfRequests).map { i ->
+                    CreateUrlRequest("$baseUrl$i")
+                }
 
             // Act - Send truly concurrent requests
-            val responses = runBlocking {
-                requests.map { request ->
-                    async {
-                        webTestClient.post()
-                            .uri("/api/v1/urls")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .bodyValue(request)
-                            .exchange()
-                            .expectStatus().isOk
-                            .expectBody<UrlResponse>()
-                            .returnResult()
-                            .responseBody!!
-                    }
-                }.awaitAll()
-            }
+            val responses =
+                runBlocking {
+                    requests.map { request ->
+                        async {
+                            webTestClient.post()
+                                .uri("/api/v1/urls")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(request)
+                                .exchange()
+                                .expectStatus().isOk
+                                .expectBody<UrlResponse>()
+                                .returnResult()
+                                .responseBody!!
+                        }
+                    }.awaitAll()
+                }
 
             // Assert - All responses should have different shortIds
             val shortIds = responses.map { it.shortId }.toSet()
@@ -491,23 +491,24 @@ class UrlShortenerIntegrationTest {
             val request = CreateUrlRequest(url)
 
             // Act - Send truly concurrent requests
-            val responses = runBlocking {
-                (1..numberOfRequests)
-                    .map {
-                        async {
-                            webTestClient.post()
-                                .uri("/api/v1/urls")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(request)
-                                .exchange()
-                                .expectStatus().isOk
-                                .expectBody<UrlResponse>()
-                                .returnResult()
-                                .responseBody!!
+            val responses =
+                runBlocking {
+                    (1..numberOfRequests)
+                        .map {
+                            async {
+                                webTestClient.post()
+                                    .uri("/api/v1/urls")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .bodyValue(request)
+                                    .exchange()
+                                    .expectStatus().isOk
+                                    .expectBody<UrlResponse>()
+                                    .returnResult()
+                                    .responseBody!!
+                            }
                         }
-                    }
-                    .awaitAll()
-            }
+                        .awaitAll()
+                }
 
             // Assert - All responses should have the same shortId
             val firstShortId = responses.first().shortId

@@ -1,6 +1,5 @@
 package com.codefactory.urlshortener.controller
 
-
 import com.codefactory.urlshortener.api.request.CreateUrlRequest
 import com.codefactory.urlshortener.api.response.UrlResponse
 import com.codefactory.urlshortener.constants.UrlConstants
@@ -35,7 +34,7 @@ class UrlShortenerController(
         @PathVariable
         @Pattern(
             regexp = UrlConstants.SHORT_ID_PATTERN,
-            message = UrlConstants.SHORT_ID_MESSAGE
+            message = UrlConstants.SHORT_ID_MESSAGE,
         )
         shortId: String,
     ): Mono<UrlResponse> {

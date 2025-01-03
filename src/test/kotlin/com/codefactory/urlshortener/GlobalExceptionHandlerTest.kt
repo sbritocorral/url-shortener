@@ -20,7 +20,6 @@ import kotlin.test.assertTrue
 
 @WebFluxTest(controllers = [UrlShortenerController::class])
 class GlobalExceptionHandlerTest {
-
     @Autowired
     private lateinit var webTestClient: WebTestClient
 
@@ -37,9 +36,10 @@ class GlobalExceptionHandlerTest {
     fun `should handle unexpected exceptions`() {
         // Arrange
         val request = CreateUrlRequest("https://example.com")
-        coEvery { urlShortenerService.createShortUrl(any()) } returns Mono.error(
-            RuntimeException("Unexpected database error")
-        )
+        coEvery { urlShortenerService.createShortUrl(any()) } returns
+            Mono.error(
+                RuntimeException("Unexpected database error"),
+            )
 
         // Act & Assert
         webTestClient.post()
@@ -61,9 +61,10 @@ class GlobalExceptionHandlerTest {
     fun `should handle unexpected exceptions in URL resolution`() {
         // Arrange
         val shortId = "abcd1234"
-        coEvery { urlShortenerService.resolveShortUrl(any()) } returns Mono.error(
-            RuntimeException("Unexpected database error")
-        )
+        coEvery { urlShortenerService.resolveShortUrl(any()) } returns
+            Mono.error(
+                RuntimeException("Unexpected database error"),
+            )
 
         // Act & Assert
         webTestClient.get()

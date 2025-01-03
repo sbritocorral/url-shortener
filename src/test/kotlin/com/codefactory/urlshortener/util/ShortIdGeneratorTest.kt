@@ -1,19 +1,17 @@
 package com.codefactory.urlshortener.util
 
 import com.codefactory.urlshortener.constants.UrlConstants.BASE62_ALPHABET
-import kotlin.collections.forEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import kotlin.collections.forEach
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 import kotlin.text.repeat
 import kotlin.text.takeLast
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
-
 
 class ShortIdGeneratorTest {
-
     @Test
     fun `generateShortId should create consistent output for same input`() {
         // Arrange
@@ -28,17 +26,17 @@ class ShortIdGeneratorTest {
         assertEquals(8, result1.length)
     }
 
-
     @Test
     fun `generateShortId should create consistent length output for all inputs`() {
         // Arrange
-        val testUrls = listOf(
-            "https://example.com",
-            "https://example.com/",
-            "https://example.com/path",
-            "https://example.com?param=value",
-            "https://example.com#fragment"
-        )
+        val testUrls =
+            listOf(
+                "https://example.com",
+                "https://example.com/",
+                "https://example.com/path",
+                "https://example.com?param=value",
+                "https://example.com#fragment",
+            )
 
         // Act & Assert
         testUrls.forEach { url ->
@@ -46,7 +44,7 @@ class ShortIdGeneratorTest {
             assertEquals(
                 8,
                 result.length,
-                "Generated shortId for '$url' has incorrect length: $result (length: ${result.length})"
+                "Generated shortId for '$url' has incorrect length: $result (length: ${result.length})",
             )
         }
     }
@@ -54,12 +52,13 @@ class ShortIdGeneratorTest {
     @Test
     fun `generateShortId should maintain consistent length with special characters`() {
         // Arrange
-        val testUrls = listOf(
-            "https://example.com/!@#$%^&*()",
-            "https://example.com#fragment1234567890",
-            "https://example.com/very/long/path/with#fragment?and=param",
-            "https://example.com/" + "a".repeat(100)
-        )
+        val testUrls =
+            listOf(
+                "https://example.com/!@#$%^&*()",
+                "https://example.com#fragment1234567890",
+                "https://example.com/very/long/path/with#fragment?and=param",
+                "https://example.com/" + "a".repeat(100),
+            )
 
         // Act & Assert
         testUrls.forEach { url ->
@@ -67,7 +66,7 @@ class ShortIdGeneratorTest {
             assertEquals(
                 8,
                 result.length,
-                "Generated shortId for URL ending with '${url.takeLast(20)}...' has incorrect length: $result (length: ${result.length})"
+                "Generated shortId for URL ending with '${url.takeLast(20)}...' has incorrect length: $result (length: ${result.length})",
             )
         }
     }
@@ -113,7 +112,7 @@ class ShortIdGeneratorTest {
         // Assert
         assertTrue(
             result.all { it in BASE62_ALPHABET },
-            "Generated ID contains invalid characters: ${result.filter { it !in BASE62_ALPHABET }}"
+            "Generated ID contains invalid characters: ${result.filter { it !in BASE62_ALPHABET }}",
         )
         assertEquals(customLength, result.length)
     }

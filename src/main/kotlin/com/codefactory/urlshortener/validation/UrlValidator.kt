@@ -6,7 +6,10 @@ import java.net.URI
 import java.net.URISyntaxException
 
 class UrlValidator : ConstraintValidator<ValidUrl, String> {
-    override fun isValid(value: String?, context: ConstraintValidatorContext): Boolean {
+    override fun isValid(
+        value: String?,
+        context: ConstraintValidatorContext,
+    ): Boolean {
         if (value == null || value.isBlank()) return true // Let @NotBlank handle this
 
         return try {
