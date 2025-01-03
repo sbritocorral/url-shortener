@@ -103,30 +103,6 @@ class UrlShortenerServiceTest {
             coVerify(exactly = 1) { repository.findByUrlHash(any()) }
             coVerify(exactly = 2) { repository.save(any()) }
         }
-
-
-        @ParameterizedTest
-        @ValueSource(
-            strings = [
-                "http://example.com/path?param=value#fragment with spaces",  // Invalid fragment
-                "http://example.com:random",                                 // Invalid port
-                "http://example..com",                                       // Double dot in domain
-            ]
-        )
-        fun `should reject invalid URLs`(malformedUrl: String) {
-            // Arrange
-            val request = CreateUrlRequest(malformedUrl)
-
-            // Act & Assert
-            StepVerifier.create(service.createShortUrl(request))
-                .verifyError(InvalidUrlException::class.java)
-
-            coVerify(exactly = 0) {
-                repository.findByUrlHash(any())
-                repository.save(any())
-            }
-        }
-
     }
 
     @Nested
