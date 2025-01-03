@@ -5,6 +5,11 @@ import jakarta.validation.ConstraintValidatorContext
 import java.net.URI
 import java.net.URISyntaxException
 
+/**
+ * Ensures URLs meet proper formatting and security requirements. Validates scheme,
+ * hostname, and overall structure while protecting against malformed or potentially
+ * malicious URLs.
+ */
 class UrlValidator : ConstraintValidator<ValidUrl, String> {
     override fun isValid(
         value: String?,

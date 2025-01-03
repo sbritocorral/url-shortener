@@ -18,6 +18,10 @@ import reactor.core.publisher.Mono
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+/**
+ * Tests for global exception handling.
+ * Verifies proper error responses for different failure scenarios.
+ */
 @Suppress("ReactiveStreamsUnusedPublisher")
 @WebFluxTest(controllers = [UrlShortenerController::class])
 class GlobalExceptionHandlerTest {

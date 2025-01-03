@@ -11,6 +11,10 @@ import kotlin.test.assertTrue
 import kotlin.text.repeat
 import kotlin.text.takeLast
 
+/**
+ * Tests for the short ID generation utility.
+ * Verifies ID generation consistency and format.
+ */
 class ShortIdGeneratorTest {
     @Test
     fun `generateShortId should create consistent output for same input`() {

@@ -25,6 +25,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
+/**
+ * Integration tests using real database with test containers.
+ * Verifies end-to-end functionality of the URL shortening service.
+ */
 @Suppress("HttpUrlsUsage")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestcontainersConfiguration::class)
@@ -45,6 +49,11 @@ class UrlShortenerIntegrationTest {
         clearAllMocks()
     }
 
+    /**
+     * URL creation tests verify:
+     * - Successful URL shortening
+     * - Duplicate URL handling
+     */
     @Nested
     inner class CreateUrl {
         @Test
@@ -112,6 +121,10 @@ class UrlShortenerIntegrationTest {
         }
     }
 
+    /**
+     * URL resolution tests verify:
+     * - Successful URL lookup
+     */
     @Nested
     inner class ResolveUrl {
         @Test
@@ -141,6 +154,13 @@ class UrlShortenerIntegrationTest {
         }
     }
 
+    /**
+     * URL validation tests verify:
+     * - Valid URL acceptance
+     * - Invalid URL rejection
+     * - Length limits
+     * - Special characters
+     */
     @Nested
     inner class UrlValidation {
         @ParameterizedTest(name = "should accept valid URL: {0}")
@@ -340,6 +360,11 @@ class UrlShortenerIntegrationTest {
         }
     }
 
+    /**
+     * Error handling tests verify:
+     * - Bad request handling
+     * - Not found handling
+     */
     @Nested
     inner class ErrorHandling {
         @Test
@@ -376,6 +401,11 @@ class UrlShortenerIntegrationTest {
         }
     }
 
+    /**
+     * Data consistency tests verify:
+     * - Multiple operation consistency
+     * - Database state verification
+     */
     @Nested
     inner class Consistency {
         @Test
@@ -426,6 +456,11 @@ class UrlShortenerIntegrationTest {
         }
     }
 
+    /**
+     * Concurrency tests verify:
+     * - Parallel request handling
+     * - Race condition prevention
+     */
     @Nested
     inner class Concurrency {
         @Test

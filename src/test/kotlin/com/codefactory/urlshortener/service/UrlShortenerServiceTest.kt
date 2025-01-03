@@ -23,6 +23,10 @@ import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+/**
+ * Unit tests for the URL shortener service.
+ * Tests URL creation, resolution, and error handling using mocked repository.
+ */
 @Suppress("HttpUrlsUsage", "ReactiveStreamsUnusedPublisher")
 class UrlShortenerServiceTest {
     private lateinit var repository: UrlMappingRepository
@@ -39,6 +43,12 @@ class UrlShortenerServiceTest {
         clearAllMocks()
     }
 
+    /**
+     * CreateShortUrl tests verify:
+     * - URL normalization for different URL components
+     * - Handling of hash collisions
+     * - Duplicate URL detection
+     */
     @Nested
     inner class CreateShortUrl {
         @ParameterizedTest
@@ -107,6 +117,11 @@ class UrlShortenerServiceTest {
         }
     }
 
+    /**
+     * ResolveShortUrl tests verify:
+     * - Successful URL resolution
+     * - Not found error handling
+     */
     @Nested
     inner class ResolveShortUrl {
         @Test

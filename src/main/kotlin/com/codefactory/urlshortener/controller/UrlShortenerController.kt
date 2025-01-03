@@ -16,11 +16,19 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
+/**
+ * REST controller handling URL shortening operations.
+ * Provides endpoints for creating and resolving shortened URLs.
+ */
 @RestController
 @RequestMapping("/api/v1/urls")
 class UrlShortenerController(
     private val service: UrlShortenerService,
 ) {
+    /**
+     * Creates a shortened URL from the provided original URL.
+     * Accepts JSON payload and returns the shortened URL details.
+     */
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun createUrl(
         @Valid @RequestBody request: CreateUrlRequest,
@@ -29,6 +37,10 @@ class UrlShortenerController(
             .map { it.toResponse() }
     }
 
+    /**
+     * Resolves a shortened URL back to its original URL.
+     * The shortId must be exactly 8 characters of Base62 alphabet.
+     */
     @GetMapping("/{shortId}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getUrl(
         @PathVariable

@@ -13,10 +13,18 @@ import org.springframework.web.bind.support.WebExchangeBindException
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.server.ServerWebInputException
 
+/**
+ * Global exception handler for the application.
+ * Provides consistent error responses across all endpoints.
+ */
 @RestControllerAdvice
 class GlobalExceptionHandler {
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    /**
+     * Handles URL not found scenarios.
+     * Returns 404 status with details about the missing URL.
+     */
     @ExceptionHandler(UrlShortenerException::class)
     fun handleUrlShortenerException(
         ex: UrlShortenerException,
@@ -39,6 +47,10 @@ class GlobalExceptionHandler {
             )
     }
 
+    /**
+     * Handles validation failures.
+     * Returns 400 status with details about the validation errors.
+     */
     @ExceptionHandler(ServerWebInputException::class, ResponseStatusException::class, ConstraintViolationException::class)
     fun handlePathVariableException(request: ServerHttpRequest): ResponseEntity<ErrorResponse> {
         return ResponseEntity
@@ -55,6 +67,10 @@ class GlobalExceptionHandler {
             )
     }
 
+    /**
+     * Handles invalid path variable format.
+     * Returns 400 status when short ID format is invalid.
+     */
     @ExceptionHandler(WebExchangeBindException::class)
     fun handleValidationErrors(
         ex: WebExchangeBindException,
@@ -76,6 +92,10 @@ class GlobalExceptionHandler {
             )
     }
 
+    /**
+     * Catches all unhandled exceptions.
+     * Returns 500 status with a generic error message.
+     */
     @ExceptionHandler(Exception::class)
     fun handleGenericError(
         ex: Exception,

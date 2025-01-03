@@ -1,4 +1,12 @@
-CREATE TABLE IF NOT EXISTS url_mappings (
+/**
+ * Database schema for URL mappings.
+ * Features:
+ * - Unique constraints on short_id and url_hash
+ * - TIMESTAMPTZ for proper timezone handling
+ * - BYTEA for efficient hash storage
+ */
+
+ CREATE TABLE IF NOT EXISTS url_mappings (
     id BIGSERIAL PRIMARY KEY,
     short_id VARCHAR(255) NOT NULL,
     original_url TEXT NOT NULL,

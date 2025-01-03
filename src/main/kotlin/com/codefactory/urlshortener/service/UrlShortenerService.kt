@@ -15,12 +15,20 @@ import java.net.URI
 import java.security.MessageDigest
 import java.time.Instant
 
+/**
+ * Core service for URL shortening operations. Handles URL creation, resolution,
+ * and duplicate detection.
+ */
 @Service
 class UrlShortenerService(
     private val repository: UrlMappingRepository,
 ) {
     private val logger = LoggerFactory.getLogger(UrlShortenerService::class.java)
 
+    /**
+     * Creates a shortened URL from the original URL. If the URL has been shortened before,
+     * returns the existing mapping. Handles hash collisions by adding a timestamp-based salt.
+     */
     fun createShortUrl(request: CreateUrlRequest): Mono<ShortenedUrl> {
         return Mono.defer {
             logger.debug("Creating short URL for: {}", request.originalUrl)
@@ -58,12 +66,20 @@ class UrlShortenerService(
         }
     }
 
+    /**
+     * Resolves a short URL identifier back to its original URL.
+     * Throws UrlNotFoundException if the short ID doesn't exist.
+     */
     fun resolveShortUrl(shortId: String): Mono<ShortenedUrl> {
         return repository.findByShortId(shortId)
             .map { it.toDomain() }
             .switchIfEmpty(Mono.error(UrlNotFoundException(shortId)))
     }
 
+    /**
+     * Normalizes URLs for consistent handling by converting to HTTPS,
+     * lowercasing components, and removing trailing slashes.
+     */
     private fun normalizeUrl(url: String): String {
         val uri = URI(url)
         return URI(
