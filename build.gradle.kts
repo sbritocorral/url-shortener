@@ -8,7 +8,6 @@ plugins {
 }
 
 group = "com.codefactory"
-version = "0.0.1-SNAPSHOT"
 
 kotlin {
     jvmToolchain(21)
@@ -30,6 +29,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework:spring-jdbc")
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.7.0")
+    implementation("org.springdoc:springdoc-openapi-starter-common:2.7.0")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
 
