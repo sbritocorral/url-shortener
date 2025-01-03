@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono
 class UrlShortenerController(
     private val service: UrlShortenerService,
 ) {
-    @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun createUrl(
         @Valid @RequestBody request: CreateUrlRequest,
     ): Mono<UrlResponse> {
