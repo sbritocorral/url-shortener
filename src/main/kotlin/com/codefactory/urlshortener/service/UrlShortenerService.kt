@@ -68,21 +68,15 @@ class UrlShortenerService(
     }
 
     private fun normalizeUrl(url: String): String {
-        return try {
-            val uri = URI(url.trim())
-            val normalizedUri = URI(
-                "https",
-                uri.userInfo,
-                uri.host?.lowercase(),
-                uri.port,
-                uri.path?.removeSuffix("/"),
-                uri.query?.split('&')?.sorted()?.joinToString("&"), // Sort query parameters
-                uri.fragment
-            ).normalize()
-
-            IDN.toASCII(normalizedUri.toString()) // Handle international domains
-        } catch (e: Exception) {
-            throw InvalidUrlException("Unable to normalize URL: ${e.message}", e)
-        }
+        val uri = URI(url)
+        return URI(
+            "https",
+            uri.userInfo?.lowercase(),
+            uri.host.lowercase(),
+            uri.port,
+            uri.path,
+            uri.query,
+            uri.fragment
+        ).toString().trimEnd('/')
     }
 }
