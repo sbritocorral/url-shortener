@@ -40,10 +40,7 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ServerWebInputException::class, ResponseStatusException::class, ConstraintViolationException::class)
-    fun handlePathVariableException(
-        ex: Exception,
-        request: ServerHttpRequest,
-    ): ResponseEntity<ErrorResponse> {
+    fun handlePathVariableException(request: ServerHttpRequest): ResponseEntity<ErrorResponse> {
         return ResponseEntity
             .badRequest()
             .body(

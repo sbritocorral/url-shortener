@@ -40,7 +40,7 @@ class UrlValidator : ConstraintValidator<ValidUrl, String> {
             if (uri.port != -1 && (uri.port !in 1..65535)) return false
 
             true
-        } catch (e: URISyntaxException) {
+        } catch (_: URISyntaxException) {
             false
         }
     }

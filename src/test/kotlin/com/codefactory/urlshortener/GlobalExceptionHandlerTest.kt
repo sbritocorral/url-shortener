@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@Suppress("ReactiveStreamsUnusedPublisher")
 @WebFluxTest(controllers = [UrlShortenerController::class])
 class GlobalExceptionHandlerTest {
     @Autowired

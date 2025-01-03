@@ -23,6 +23,7 @@ import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@Suppress("HttpUrlsUsage", "ReactiveStreamsUnusedPublisher")
 class UrlShortenerServiceTest {
     private lateinit var repository: UrlMappingRepository
     private lateinit var service: UrlShortenerService
